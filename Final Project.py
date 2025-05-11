@@ -1,0 +1,63 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+from datetime import datetime, timedelta
+from tkcalendar import Calendar
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+class TaskManager:
+  def__init__(self, root):
+  self.root = root
+  self.root.title("Gestor de Tareas con Cronograma Interactivo")
+  self.root.geometry("1200x700")
+
+#Estructura para almacenar las tareas
+self.task = []
+self.filtered_tasks = []
+
+#Variables para filtros
+self.filter_priority = tk.StringVar(value="Todas")
+self.filter_status = tk.StringVar(value="Todas")
+self.filter_tags = tk.StringVar(value="")
+
+#Variables para nueva tarea
+self.new_task_title = tk.StringVar()
+self.new_task_desc = tk.StringVar()
+self.new_task_due_date = tk.StringVar()
+self.new_task_priority = tk.StringVar(value="media")
+self.new_task_status = tk.StringVar(value="pendiente")
+self.new_task_tags = tk.StringVar()
+
+# Configurar el estilo
+self.style = ttk.Style()
+self.style.configure('TFrame', background='#f0f0f0')
+self.style.configure('TLabel', background='#f0f0f0', font=('Arial', 10))
+self.style.configure('TButton', font=('Arial', 10))
+self.style.configure('Header.TLabel', font=('Arial', 12, 'bold'))
+
+# Crear widgets
+self.creat_widgets()
+
+def create_widgets(self):
+  # Frame principal
+  main_frame = ttk.Frame(self.root)
+  main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+# Panel izquierdo (formulario y filtros)
+left_panel = ttk.Frame(main_frame, width=400)
+left_panel.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+# Panel derecho (lista de tareas y calendario)
+right_panel = ttk.Frame(main_frame)
+right_panel.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+# ---------------------------
+# Panel izquierdo - Formulario
+# ---------------------------
+form_frame = ttk.LabelFrame(left_panel, text="Nueva Tarea", padding=10)
+form_frame.pack(fill=tk.X, pady=(0, 10))
+
+
+
+
+
