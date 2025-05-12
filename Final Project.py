@@ -57,7 +57,53 @@ right_panel.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 form_frame = ttk.LabelFrame(left_panel, text="Nueva Tarea", padding=10)
 form_frame.pack(fill=tk.X, pady=(0, 10))
 
+ttk.Label(form_frame, text="Título:").grid(row=0, column=0, sticky=tk.W, pady=2)
+ttk.Entry(form_frame, textvariable=self.new_task_title, width=30).grid(row=0, column=1, pady=2, padx=5)
 
+ttk.Label(form_frame, text="Descripción:").grid(row=1, column=0, sticky=tk.W, pady=2)
+ttk.Entry(form_frame, textvariable=self.new_task_desc, width=30).grid(row=1, column=1, pady=2, padx=5)
+        
+ttk.Label(form_frame, text="Fecha límite:").grid(row=2, column=0, sticky=tk.W, pady=2)
+ttk.Entry(form_frame, textvariable=self.new_task_due_date, width=30).grid(row=2, column=1, pady=2, padx=5)
+ttk.Button(form_frame, text="Seleccionar fecha", command=self.select_date).grid(row=2, column=2, padx=5)
+        
+ttk.Label(form_frame, text="Prioridad:").grid(row=3, column=0, sticky=tk.W, pady=2)
+ttk.Combobox(form_frame, textvariable=self.new_task_priority, 
+values=["alta", "media", "baja"], width=27).grid(row=3, column=1, pady=2, padx=5)
+        
+ttk.Label(form_frame, text="Estado:").grid(row=4, column=0, sticky=tk.W, pady=2)
+ttk.Combobox(form_frame, textvariable=self.new_task_status, 
+             values=["pendiente", "en progreso", "completada"], width=27).grid(row=4, column=1, pady=2, padx=5)
+        
+ttk.Label(form_frame, text="Etiquetas (separadas por comas):").grid(row=5, column=0, sticky=tk.W, pady=2)
+ttk.Entry(form_frame, textvariable=self.new_task_tags, width=30).grid(row=5, column=1, pady=2, padx=5)
+        
+ttk.Button(form_frame, text="Agregar Tarea", command=self.add_task).grid(row=6, column=1, pady=10)
 
+# ---------------------------
+# Panel izquierdo - Formulario
+# ---------------------------
+filter_frame = ttk.LabelFrame(left_panel, text="Filtros", padding=10)
+filter_frame.pack(fill=tk.X, pady=10)
 
+ttk.Label(filter_frame, text="Prioridad:").grid(row=0, column=0, sticky=tk.W, pady=2)
+ttk.Combobox(filter_frame, textvariable=self.filter_priority, 
+             values=["Todas", "alta", "media", "baja"], width=15).grid(row=0, column=1, pady=2, padx=5)
+        
+ttk.Label(filter_frame, text="Estado:").grid(row=1, column=0, sticky=tk.W, pady=2)
+ttk.Combobox(filter_frame, textvariable=self.filter_status, 
+             values=["Todas", "pendiente", "en progreso", "completada"], width=15).grid(row=1, column=1, pady=2, padx=5)
+        
+ttk.Label(filter_frame, text="Etiquetas:").grid(row=2, column=0, sticky=tk.W, pady=2)
+ttk.Entry(filter_frame, textvariable=self.filter_tags, width=15).grid(row=2, column=1, pady=2, padx=5)
+        
+ttk.Button(filter_frame, text="Aplicar Filtros", command=self.apply_filters).grid(row=3, column=1, pady=10)
+
+# ---------------------------
+# Panel Derecho - Lista de Tareas
+# ---------------------------
+task_frame = ttk.LabelFrame(right_panel, text="Lista de Tareas", padding=10)
+task_frame.pack(fill=tk.BOTH, expand=True)
+
+#Treeview para mostrar las tareas 
 
