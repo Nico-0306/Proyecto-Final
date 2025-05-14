@@ -332,13 +332,120 @@ def edit_task(self):
 
     #Actualizar tarea
     task['title'] = new_title
-    
-  
+    task['description'] = edit_desc.get()
+    task['due_date'] = new_date if new_date else "Sin fecha"
+    task['priority'] = edit_priority.get()
+    task['status'] = edit_status.get()
+    task['tags'] = [tag.strip() for tag in edit_tags.get().split(",") if tag.strip()]
+            
+    # Actualizar la lista
+    self.apply_filters()
+    edit_window.destroy()
+    messagebox.showinfo("Éxito", "Tarea actualizada correctamente")
+        
+   # Crear ventana de edición
+    edit_window = tk.Toplevel(self.root)
+    edit_window.title("Editar Tarea")
+        
+    # Variables para el formulario de edición
+    edit_title = tk.StringVar(value=task['title'])
+    edit_desc = tk.StringVar(value=task['description'])
+    edit_due_date = tk.StringVar(value=task['due_date'])
+    edit_priority = tk.StringVar(value=task['priority'])
+    edit_status = tk.StringVar(value=task['status'])
+    edit_tags = tk.StringVar(value=", ".join(task['tags']))
 
+    # Formulario de edición
+    ttk.Label(edit_window, text="Título:").grid(row=0, column=0, sticky=tk.W, pady=2)
+    ttk.Entry(edit_window, textvariable=edit_title, width=30).grid(row=0, column=1, pady=2, padx=5)
+        
+    ttk.Label(edit_window, text="Descripción:").grid(row=1, column=0, sticky=tk.W, pady=2)
+    ttk.Entry(edit_window, textvariable=edit_desc, width=30).grid(row=1, column=1, pady=2, padx=5)
+        
+    ttk.Label(edit_window, text="Fecha límite:").grid(row=2, column=0, sticky=tk.W, pady=2)
+    ttk.Entry(edit_window, textvariable=edit_due_date, width=30).grid(row=2, column=1, pady=2, padx=5)
+        
+    ttk.Label(edit_window, text="Prioridad:").grid(row=3, column=0, sticky=tk.W, pady=2)
+    ttk.Combobox(edit_window, textvariable=edit_priority, 
+        values=["alta", "media", "baja"], width=27).grid(row=3, column=1, pady=2, padx=5)
+        
+    ttk.Label(edit_window, text="Estado:").grid(row=4, column=0, sticky=tk.W, pady=2)
+    ttk.Combobox(edit_window, textvariable=edit_status, 
+        values=["pendiente", "en progreso", "completada"], width=27).grid(row=4, column=1, pady=2, padx=5)
+        
+    ttk.Label(edit_window, text="Etiquetas (separadas por comas):").grid(row=5, column=0, sticky=tk.W, pady=2)
+    ttk.Entry(edit_window, textvariable=edit_tags, width=30).grid(row=5, column=1, pady=2, padx=5)
+        
+    ttk.Button(edit_window, text="Guardar Cambios", command=save_changes).grid(row=6, column=1, pady=10)
 
+def delete_task(self):
+  selected = self.get_selected_task()
+  if not selected:
+    return
+        
+  task, item_id = selected
+        
+  if messagebox.askyesno("Confirmar", f"¿Está seguro que desea eliminar la tarea '{task['title']}'?"):
+    self.tasks.remove(task)
+    self.apply_filters()
+    messagebox.showinfo("Éxito", "Tarea eliminada correctamente")
 
+def view_details(self):
+  selected = self.get_selected_task()
+  if not selected:
+    return
+        
+  task, item_id = selected
+        
+  details_window = tk.Toplevel(self.root)
+  details_window.title(f"Detalles: {task['title']}")
 
+  # Mostrar detalles completos
+  ttk.Label(details_window, text=f"Título: {task['title']}", font=('Arial', 11, 'bold')).pack(anchor=tk.W, pady=(10, 2), padx=10)
+  ttk.Label(details_window, text=f"Descripción: {task['description']}").pack(anchor=tk.W, pady=2, padx=10)
+  ttk.Label(details_window, text=f"Fecha límite: {task['due_date']}").pack(anchor=tk.W, pady=2, padx=10)
+  ttk.Label(details_window, text=f"Prioridad: {task['priority']}").pack(anchor=tk.W, pady=2, padx=10)
+  ttk.Label(details_window, text=f"Estado: {task['status']}").pack(anchor=tk.W, pady=2, padx=10)
+  ttk.Label(details_window, text=f"Etiquetas: {', '.join(task['tags']) if task['tags'] else 'Ninguna'}").pack(anchor=tk.W, pady=2, padx=10)
 
+def show_calendar_tasks(self):
+  # Crear ventana para mostrar tareas en el calendario
+  calendar_window = tk.Toplevel(self.root)
+  calendar_window.title("Tareas en Calendario")
+  calendar_window.geometry("800x600")
+        
+  # Calendario grande
+  big_calendar = Calendar(calendar_window, selectmode='day', date_pattern='yyyy-mm-dd')
+  big_calendar.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+  # Mostrar tareas en fechas correspondientes
+  for task in self.filtered_tasks:
+  if task['due_date'] and task['due_date'] != "Sin fecha":
+    try:
+      big_calendar.calevent_create(
+        datetime.strptime(task['due_date'], '%Y-%m-%d'),
+        task['title'],
+        f"Prioridad: {task['priority']}, Estado: {task['status']}"
+      )
+    except ValueError:
+      continue
+
+  # Configurar colores según prioridad
+  tag_colors = {'alta': 'red', 'media': 'orange', 'baja': 'green'}
+  for priority, color in tag_colors.items():
+    big_calendar.tag_config(priority, background=color)
+        
+  # Asignar tags según prioridad
+  for event in big_calendar.calevent_get():
+    for task in self.filtered_tasks:
+      if task['title'] == big_calendar.calevent_cget(event, 'text'):
+        big_calendar.calevent_cget(event, 'tags', task['priority'])
+        break
+
+if __name__ == "__main__":
+root = tk.Tk()
+app = TaskManager(root)
+root.mainloop()
 
 
 
